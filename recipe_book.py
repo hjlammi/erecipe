@@ -1,18 +1,23 @@
 import json
+import string
 
 class RecipeBook:
+    # Add all recipes in the book.
     def __init__(self, recipes):
         self.recipes = []
         for recipe in recipes:
             new_recipe = Recipe(recipe)
             self.recipes.append(new_recipe)
 
+    # Returns recipes in a list that can be passed to JSON.dumps.
     def serialize(self):
         serialized_recipes = []
         for recipe in self.recipes:
             serialized_recipes.append(recipe.serialize())
         return serialized_recipes
 
+    # Finds recipes that include the ingredient name which is given as a parameter.
+    # Returns a list with the found recipes and if no recipe has the name as an ingredient an empty list is returned.
     def recipes_with_ingredient(self, name):
         recipes_with_ingredient = []
         for recipe in self.recipes:
@@ -26,17 +31,14 @@ class Recipe:
     def __init__(self, recipe):
         self.name = recipe["name"]
         self.ingredients = []
-        for ingredient in recipe["ingredients"]:
-            ingred = { "name" : ingredient["name"],
-                       "amount" : ingredient["amount"],
-                       "unit" : ingredient["unit"]}
-            self.ingredients.append(ingred)
+        for i in recipe["ingredients"]:
+            ingredients = {"name": i["name"],
+                           "amount": i["amount"],
+                           "unit": i["unit"]}
+            self.ingredients.append(ingredients)
         self.instructions = recipe["instructions"]
 
-    # def __str__(self):
-    #     return (self.name + "\n" + str(len(self.ingredients)) + "\n" + self.ingredients[0]["unit"] +
-    #             "\n" + self.instructions)
-
+    # Used in tests to compare recipe objects
     def __eq__(self, other):
         if (self.name == other.name and
             self.instructions == other.instructions and
@@ -45,25 +47,21 @@ class Recipe:
         else:
             return False
 
+    # Returns recipe in a dict form that can be turned into JSON format.
     def serialize(self):
-        return { "name": self.name, "ingredients": self.ingredients, "instructions": self.instructions }
+        return {"name": self.name, "ingredients": self.ingredients, "instructions": self.instructions}
 
+    # Checks if an ingredient is included in a recipe. Gets the name or a partial name of an ingredient as a parameter.
+    # If an ingredient name consists of several substrings the whitespaces are replaced with "_" in the query.
     def has_ingredient(self, name):
-        name = name.capitalize()
+        name = name.replace("+", " ")
+        name = string.capwords(name)
         found = False
         for i in self.ingredients:
-            if i["name"] == name:
+            # Checks if the ingredient name or part of it is in the ingredients list.
+            if name == i["name"] or name in i["name"]:
                 found = True
                 break
             else:
                 found = False
         return found
-
-# def get_recipes_from_file():
-#     with open('eresepti/recipes.json', encoding='utf-8') as recipes_file:
-#         recipes = json.load(recipes_file)
-#         return recipes
-#
-# if __name__ == "__main__":
-#     recipes = get_recipes_from_file()
-#     book = RecipeBook(recipes)
