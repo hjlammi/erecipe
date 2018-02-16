@@ -32,6 +32,4 @@ The case of the search parameter doesn't matter so "Nutella" and "nutella" give 
 If an ingredient name consists of several words, those words can be
 used in searches. E.g., if the ingredient is "Bok Choy", both "Bok" and "Choy" can be used to search for a recipe.
 
-If you want to search with a whole name that contains whitespaces, replace the whitespaces with "+", eg. http://127.0.0.1:5000/recipes?ingredient=bok_choy
-
 The recipes are shown in JSON format.
