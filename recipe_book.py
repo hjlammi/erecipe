@@ -42,15 +42,6 @@ class Recipe:
             self.ingredients.append(ingredients)
         self.instructions = recipe["instructions"]
 
-    # Used in tests to compare recipe objects
-    def __eq__(self, other):
-        if (self.name == other.name and
-            self.instructions == other.instructions and
-            self.ingredients == other.ingredients):
-            return True
-        else:
-            return False
-
     # Returns recipe in a dict form that can be turned into JSON format.
     def serialize(self):
         return {"name": self.name, "ingredients": self.ingredients, "instructions": self.instructions}
